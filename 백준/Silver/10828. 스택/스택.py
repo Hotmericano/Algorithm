@@ -1,12 +1,12 @@
 import sys
-input = sys.stdin.read
+input = sys.stdin.readline
 
 class ArrayStack():
     def __init__(self, size):
         self.size = size
         self.top = 0
         self.bottom = 0
-        self.array = [None] * size
+        self.array = [None]*size
 
     def isEmpty(self):
         return self.top == self.bottom
@@ -15,12 +15,14 @@ class ArrayStack():
         return self.top == self.size
     
     def push(self, e):
-        if not self.isFull():
+        if self.isFull() is not True:
             self.array[self.top] = e
             self.top += 1
-    
+        else:
+            pass
+
     def pop(self):
-        if not self.isEmpty():
+        if self.isEmpty() is not True:
             self.top -= 1
             return self.array[self.top]
         else:
@@ -33,22 +35,26 @@ class ArrayStack():
         if self.isEmpty():
             return -1
         else:
-            return self.array[self.top - 1]
-
-# 전체 입력을 한 번에 읽어온 뒤, 각 줄을 처리
-data = input().splitlines()
-n = int(data[0])
+            return self.array[self.top-1]
+    
+n = int(input())
 stack = ArrayStack(n)
 
-for command in data[1:]:
-    if command.startswith('push'):
-        _, num = command.split()
-        stack.push(int(num))
-    elif command == 'pop':
+for i in range(n):
+    command = input().split()
+    if command[0] == 'push':
+        stack.push(int(command[1]))
+    elif 'pop' == command[0]:
         print(stack.pop())
-    elif command == 'size':
+    elif 'size' == command[0]:
         print(stack.returnSize())
-    elif command == 'top':
+    elif 'top' == command[0]:
         print(stack.returnTop())
-    elif command == 'empty':
-        print(1 if stack.isEmpty() else 0)
+    elif 'empty' == command[0]:
+        state = stack.isEmpty()
+        if state:
+            print(1)
+        else:
+            print(0)
+
+
