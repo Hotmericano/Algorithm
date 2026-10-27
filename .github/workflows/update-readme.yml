@@ -1,0 +1,42 @@
+# 풀이 폴더가 바뀌면 README의 풀이 목록을 자동으로 갱신한다.
+name: Update README
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "프로그래머스/**"
+      - "백준/**"
+      - "scripts/update_readme.py"
+      - ".github/workflows/update-readme.yml"
+  workflow_dispatch: # Actions 탭에서 버튼으로 직접 실행할 수 있게
+
+permissions:
+  contents: write # README를 고쳐서 커밋하려면 쓰기 권한이 필요
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 저장소 가져오기
+        uses: actions/checkout@v4
+
+      - name: 파이썬 설치
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: README 생성
+        run: python scripts/update_readme.py
+
+      - name: 바뀐 게 있으면 커밋 & 푸시
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          if git diff --cached --quiet; then
+            echo "README 변경 없음"
+          else
+            git commit -m "docs: 풀이 목록 자동 갱신"
+            git push
+          fi
